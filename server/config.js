@@ -24,15 +24,7 @@ var n = require('nonce');
 
 var ts = Date.now();
 var non = n();
-var host = "";
 
-if(process.env.PORT){
-  host = "https://sqrtl-staging.herokuapp.com";
-} else {
-  host = "http://localhost:3000";
-}
-
-module.exports.host = host;
 
 module.exports.Yelp = {
   oauth_consumer_key: "64XR6hqr1y1Z0asgJn8O2g",
@@ -49,7 +41,8 @@ module.exports.Uber = {
   client_id: "1dPbx-9-3Sz7WrFVQR7K0gjJCOuUZhdh",
   client_secret: "2PtmgTtY-H6k8vkpfezPQXka7XuW4SWtd1AhpzGg",
   server_token: "Lbgr7WY6COErXCRZ0S71NQ-BO6pDmTpDA9ced0ld",
-  redirect_uri: host + "/api/uberRedir",
+  redirect_uri: "http://localhost:3000/api/uberRedir",
   name: "SwiftServ",
   sandbox: true
 };
+

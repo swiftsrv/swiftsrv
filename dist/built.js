@@ -2,7 +2,7 @@ angular.module('sqrtl.adventure', ["ngTouch"])
 
 .controller('AdventureController', function($scope, $location, Adventures, $window) {
 
-  $scope.data = JSON.parse(window.localStorage.getItem('data'))[0];
+  $scope.data = Adventures.dataShift();
 
   $scope.getNew = function(){
     Adventures.dataShift();
@@ -11,12 +11,10 @@ angular.module('sqrtl.adventure', ["ngTouch"])
 
   $scope.getUber = function(location){
     console.log("location coords ", location);
-    window.localStorage.setItem('latitude', location.latitude.toString());
-    window.localStorage.setItem('longitude', location.longitude.toString());
     Adventures.getUber()
     .then(function(response){
       console.log("redirect URL ", response);
-      $window.location.href = response;
+      $location.path(response);
     });
   };
 
@@ -42,7 +40,6 @@ angular.module("sqrtl", [
     "sqrtl.httpRequest",
     "sqrtl.form",
     "sqrtl.adventure",
-    "sqrtl.uber",
     "ui.router",
     "ngRoute",
     "ui.bootstrap",
@@ -126,7 +123,6 @@ angular.module("sqrtl.form", ['uiGmapgoogle-maps','ngTouch'])
         })
         .then(function(){
           $scope.data = window.localStorage.getItem('data')[0];
-
         })
         .then(function(){
           $state.go('adventure');
@@ -168,7 +164,7 @@ angular.module('sqrtl.httpRequest', ["ngLodash"])
   .factory('Adventures', function($http, lodash){
     //requests venues that meet location and category criteria
     //TODO: add user parameters and such
-    // var data = [];
+    var data = [];
 
     var requestAdventures = function(location, category, cll){
 
@@ -285,8 +281,6 @@ angular.module('sqrtl.httpRequest', ["ngLodash"])
       geoFindMe: geoFindMe
     };
 
-
-
   });
   // .factory('UserResponses', function($http){
   //   //tells the database if a user accepted suggestions
@@ -358,3 +352,4 @@ angular.module("sqrtl.uber", ['uiGmapgoogle-maps', 'ngTouch'])
     });
   });
 });
+

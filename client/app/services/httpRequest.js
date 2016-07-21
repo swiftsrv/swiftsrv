@@ -1,5 +1,5 @@
-angular.module('sqrtl.httpRequest', ["ngLodash"])
-  .factory('Adventures', function($http, lodash){
+angular.module('sqrtl.httpRequest', [])
+  .factory('Adventures', function($http){
     //requests venues that meet location and category criteria
     //TODO: add user parameters and such
     // var data = [];
@@ -34,9 +34,6 @@ angular.module('sqrtl.httpRequest', ["ngLodash"])
             location: datum.location
           };
         });
-        sortByReviewCount(data);
-        data = randomizeTopFive(data);
-
         window.localStorage.setItem('data',JSON.stringify(data));
         data = JSON.parse(window.localStorage.getItem('data'));
 
@@ -47,6 +44,7 @@ angular.module('sqrtl.httpRequest', ["ngLodash"])
       });
     };
 
+<<<<<<< abe1f0db34aabbf91cba65cb0c37b66afc9f3077
     //sorts data by highest reviews first.
     var sortByReviewCount = function(data) {
       data.sort(function(a,b) {
@@ -67,12 +65,14 @@ angular.module('sqrtl.httpRequest', ["ngLodash"])
       return newShuffledData;
     };
 
+=======
+>>>>>>> add stormpath, still in progress
     var dataShift = function(){
-
       data = JSON.parse(window.localStorage.getItem('data'));
-      data.shift();
-      data = randomizeTopFive(data);
+      shiftedData = data.shift();
       window.localStorage.setItem('data',JSON.stringify(data));
+      console.log(JSON.parse(window.localStorage.getItem('data')));
+      return shiftedData;
     };
 
     var getUber = function(){

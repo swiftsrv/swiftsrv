@@ -1,8 +1,17 @@
 angular.module('sqrtl.adventure', ["ngTouch"])
 
 .controller('AdventureController', function($scope, $location, Adventures, $window) {
+  // var businessName;
+  // var distance;
+  // var reviewCount;
+  // var ratings;
+  // var ratingsImage;
+  // var businessImage;
+  // var description;
 
   $scope.data = JSON.parse(window.localStorage.getItem('data'))[0];
+
+  console.log($scope.data);
 
   $scope.getNew = function(){
     Adventures.dataShift();
@@ -31,6 +40,10 @@ angular.module('sqrtl.adventure', ["ngTouch"])
     $window.location.href = $scope.address.templateUrl;
   };
   //http://maps.google.com/maps?q=24.197611,120.780512
+
+
+
+
 
 
 });
