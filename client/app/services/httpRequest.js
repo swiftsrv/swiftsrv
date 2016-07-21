@@ -43,8 +43,6 @@ angular.module('sqrtl.httpRequest', [])
         console.error(err);
       });
     };
-
-<<<<<<< abe1f0db34aabbf91cba65cb0c37b66afc9f3077
     //sorts data by highest reviews first.
     var sortByReviewCount = function(data) {
       data.sort(function(a,b) {
@@ -65,8 +63,6 @@ angular.module('sqrtl.httpRequest', [])
       return newShuffledData;
     };
 
-=======
->>>>>>> add stormpath, still in progress
     var dataShift = function(){
       data = JSON.parse(window.localStorage.getItem('data'));
       shiftedData = data.shift();
@@ -103,7 +99,6 @@ angular.module('sqrtl.httpRequest', [])
         return resp.data;
       });
     };
-
     var geoFindMe = function(callback){
       navigator.geolocation.getCurrentPosition(function(success){
         callback(success);
