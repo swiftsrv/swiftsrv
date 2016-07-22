@@ -8,8 +8,17 @@ angular.module('sqrtl.adventure', ["ngTouch"])
   // var ratingsImage;
   // var businessImage;
   // var description;
+  var getDistance = function(){
+    var long1 = window.localStorage.getItem('longitude'),
+        lat1 = window.localStorage.getItem('latitude'),
+        long2 = window.localStorage.getItem('data');
+        // lat2 = window.localStorage.getItem('data').location.latitude
+    console.log(long1, lat1, long2, lat2);
+  }
 
   $scope.data = JSON.parse(window.localStorage.getItem('data'))[0];
+
+  $scope.distance = getDistance();
 
   console.log($scope.data);
 
