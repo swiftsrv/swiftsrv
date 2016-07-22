@@ -10,7 +10,7 @@ var UserSchema = new mongoose.Schema({
 
 var User = mongoose.model('User', UserSchema);
 
-var dbport = process.env.MONGODB_URI || 'mongodb://localhost/swiftsrv'
+var dbport = process.env.MONGODB_URI || 'mongodb://localhost/swiftsrv';
 
 mongoose.connect(dbport);
 
