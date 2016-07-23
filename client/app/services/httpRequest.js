@@ -43,10 +43,6 @@ angular.module('sqrtl.httpRequest', [])
         console.error(err);
       });
     };
-<<<<<<< d5f04eb46c98f2c700989f8cbef9bc4199c85857
-=======
-
->>>>>>> add windows specific changes
     //sorts data by highest reviews first.
     var sortByReviewCount = function(data) {
       data.sort(function(a,b) {
