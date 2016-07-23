@@ -1,30 +1,14 @@
 angular.module('sqrtl.adventure', ["ngTouch"])
 
-.controller('AdventureController', function($scope, $location, Adventures, $window) {
-  // var businessName;
-  // var distance;
-  // var reviewCount;
-  // var ratings;
-  // var ratingsImage;
-  // var businessImage;
-  // var description;
-  var getDistance = function(){
-    var long1 = window.localStorage.getItem('longitude'),
-        lat1 = window.localStorage.getItem('latitude'),
-        long2 = window.localStorage.getItem('data');
-        // lat2 = window.localStorage.getItem('data').location.latitude
-    console.log(long1, lat1, long2, lat2);
-  }
+.controller('AdventureController', function($scope, $location, Adventures,LocationFactory, $window) {
 
   $scope.data = JSON.parse(window.localStorage.getItem('data'))[0];
-
-  $scope.distance = getDistance();
-
-  console.log($scope.data);
 
   $scope.getNew = function(){
     Adventures.dataShift();
     $scope.data = JSON.parse(window.localStorage.getItem('data'))[0];
+    var distance = LocationFactory.findDistance($scope.data.location.coordinate);
+    distance? $scope.distance = distance + 'km' : $scope.distance = undefined;
   };
 
   $scope.getUber = function(location){
@@ -38,6 +22,10 @@ angular.module('sqrtl.adventure', ["ngTouch"])
     });
   };
 
+  console.log(LocationFactory.findDistance($scope.data.location.coordinate));
+  var distance = LocationFactory.findDistance($scope.data.location.coordinate);
+  distance? $scope.distance = distance + 'km' : $scope.distance = undefined;
+
   $scope.address = {
     long: $scope.data.location.coordinate.longitude,
     lat: $scope.data.location.coordinate.latitude,
@@ -49,11 +37,6 @@ angular.module('sqrtl.adventure', ["ngTouch"])
     $window.location.href = $scope.address.templateUrl;
   };
   //http://maps.google.com/maps?q=24.197611,120.780512
-
-
-
-
-
 
 });
 

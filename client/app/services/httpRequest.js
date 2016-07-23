@@ -117,20 +117,55 @@ angular.module('sqrtl.httpRequest', [])
       uberRide: uberRide,
       geoFindMe: geoFindMe
     };
+  })
+  .factory("LocationFactory", function($window){
+    var longitude, latitude;
+
+    var setCoordinates = function(coordinates){
+      $window.localStorage.setItem('LocationFactoryCoordinates', JSON.stringify(coordinates));
+      longitude = coordinates.longitude;
+      latitude = coordinates.latitude;
+    };
 
 
+    var findDistance = function(coordinates){
+      Number.prototype.toRad = function(){
+        return this*Math.PI/180;
+      }
+      var lat1 = latitude,
+          lon1 = longitude,
+          lat2 = coordinates.latitude,
+          lon2 = coordinates.longitude;
+      if(typeof lat1 != 'number' || typeof lat2 != 'number' ||typeof lon1 != 'number' || typeof lon2 != 'number'){
+        return undefined;
+      }    
+      var R = 6371e3,
+          phi1 = lat1.toRad(),
+          phi2 = lat2.toRad(),
+          deltaPhi = (lat1 - lat2).toRad(),
+          deltaLambda = (lon1 - lon2).toRad();
 
+      var a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2)+
+              Math.cos(phi1) * Math.cos(phi2) *
+              Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      return Math.floor(R * c)/1000;
+    };
+
+    return {
+      setCoordinates: setCoordinates,
+      findDistance: findDistance
+    };
   });
-  // .factory('UserResponses', function($http){
-  //   //tells the database if a user accepted suggestions
-  //   var initialReaction = function(userName, restauranArray){
-  //     return $http({
-  //       method: 'POST',
-  //       url: '/adventure',
-  //       data: JSON
-  //     }).then(functon(){
-  //       //should do something.
-  //     })
-  //   }
 
-  // });
+  // var getDistance = function(){
+  //   var long1 = window.localStorage.getItem('longitude'),
+  //       lat1 = window.localStorage.getItem('latitude'),
+  //       long2 = $scope.data.location.coordinate.longitude,
+  //       lat2 = $scope.data.location.coordinate.latitude;
+
+  //   var distance = Math.sqrt(Math.pow(Math.abs(long1 - long2), 2) + Math.pow(Math.abs(lat1 - lat2), 2));
+  //   console.log(long1, long2,lat1,lat2);
+  //   console.log(distance);
+  // };
