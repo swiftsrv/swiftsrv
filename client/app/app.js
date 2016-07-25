@@ -68,3 +68,4 @@ angular.module("sqrtl", [
       $state.transitionTo('login');
     });
   });
+
