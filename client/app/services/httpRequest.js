@@ -127,7 +127,7 @@ angular.module('sqrtl.httpRequest', [])
     var findDistance = function(coordinates){
       Number.prototype.toRad = function(){
         return this*Math.PI/180;
-      }
+      };
       var lat1 = latitude,
           lon1 = longitude,
           lat2 = coordinates.latitude,

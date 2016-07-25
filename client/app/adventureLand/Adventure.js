@@ -8,7 +8,11 @@ angular.module('sqrtl.adventure', ["ngTouch"])
     Adventures.dataShift();
     $scope.data = JSON.parse(window.localStorage.getItem('data'))[0];
     var distance = LocationFactory.findDistance($scope.data.location.coordinate);
-    distance? $scope.distance = distance + 'km' : $scope.distance = undefined;
+    if(distance){
+      $scope.distance = distance + 'km';
+    }else{
+      $scope.distance = undefined;
+    }
   };
 
   $scope.getUber = function(location){
@@ -24,7 +28,11 @@ angular.module('sqrtl.adventure', ["ngTouch"])
 
   console.log(LocationFactory.findDistance($scope.data.location.coordinate));
   var distance = LocationFactory.findDistance($scope.data.location.coordinate);
-  distance? $scope.distance = distance + 'km' : $scope.distance = undefined;
+  if(distance){
+    $scope.distance = distance + 'km';
+  }else{
+    $scope.distance = undefined;
+  }
 
   $scope.address = {
     long: $scope.data.location.coordinate.longitude,

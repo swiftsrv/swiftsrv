@@ -1,21 +1,18 @@
 angular.module('sqrtl.adventure', ["ngTouch"])
 
-.controller('AdventureController', function($scope, $location, Adventures, $window) {
-  // var businessName;
-  // var distance;
-  // var reviewCount;
-  // var ratings;
-  // var ratingsImage;
-  // var businessImage;
-  // var description;
+.controller('AdventureController', function($scope, $location, Adventures,LocationFactory, $window) {
 
   $scope.data = JSON.parse(window.localStorage.getItem('data'))[0];
-
-  console.log($scope.data);
 
   $scope.getNew = function(){
     Adventures.dataShift();
     $scope.data = JSON.parse(window.localStorage.getItem('data'))[0];
+    var distance = LocationFactory.findDistance($scope.data.location.coordinate);
+    if(distance){
+      $scope.distance = distance + 'km';
+    }else{
+      $scope.distance = undefined;
+    }
   };
 
   $scope.getUber = function(location){
@@ -29,6 +26,14 @@ angular.module('sqrtl.adventure', ["ngTouch"])
     });
   };
 
+  console.log(LocationFactory.findDistance($scope.data.location.coordinate));
+  var distance = LocationFactory.findDistance($scope.data.location.coordinate);
+  if(distance){
+    $scope.distance = distance + 'km';
+  }else{
+    $scope.distance = undefined;
+  }
+
   $scope.address = {
     long: $scope.data.location.coordinate.longitude,
     lat: $scope.data.location.coordinate.latitude,
@@ -40,11 +45,6 @@ angular.module('sqrtl.adventure', ["ngTouch"])
     $window.location.href = $scope.address.templateUrl;
   };
   //http://maps.google.com/maps?q=24.197611,120.780512
-
-
-
-
-
 
 });
 
@@ -69,7 +69,8 @@ angular.module("sqrtl", [
     //sets default state when the app is booted
     $urlRouterProvider
       .when('uber', '/uber')
-      .otherwise('/form');
+      .otherwise('/form')
+      .otherwise('/');
 
     $locationProvider.html5Mode(true);
     //the form state that allows users to create their request
@@ -121,15 +122,13 @@ angular.module("sqrtl", [
       $state.transitionTo('login');
     });
   });
+
+
+
 angular.module("sqrtl.form", ['uiGmapgoogle-maps','ngTouch'])
-  .controller("FormController", function($scope, $state, Adventures){
+  .controller("FormController", function($scope, $state, Adventures, LocationFactory){
 
     $scope.geocoder = new google.maps.Geocoder();
-
-
-angular.module("sqrtl.form", [])
-  .controller("FormController", function($scope, $state, Adventures){
-
     $scope.adventure = {};
     $scope.cll = undefined;
     $scope.cllYelp = undefined;
@@ -157,6 +156,7 @@ angular.module("sqrtl.form", [])
         $scope.$apply(function(){
            $scope.cll = {latitude: success.coords.latitude, longitude: success.coords.longitude};
            $scope.cllYelp = success.coords.latitude + "," + success.coords.longitude;
+           LocationFactory.setCoordinates($scope.cll);
            console.log("cll", $scope.cll);
            $scope.reverseGeocode();
            $scope.calculating = false;
@@ -182,8 +182,8 @@ angular.module("sqrtl.form", [])
 
 
   });
-angular.module('sqrtl.httpRequest', ["ngLodash"])
-  .factory('Adventures', function($http, lodash){
+angular.module('sqrtl.httpRequest', [])
+  .factory('Adventures', function($http){
     //requests venues that meet location and category criteria
     //TODO: add user parameters and such
     // var data = [];
@@ -227,7 +227,6 @@ angular.module('sqrtl.httpRequest', ["ngLodash"])
         console.error(err);
       });
     };
-
     //sorts data by highest reviews first.
     var sortByReviewCount = function(data) {
       data.sort(function(a,b) {
@@ -264,6 +263,7 @@ angular.module('sqrtl.httpRequest', ["ngLodash"])
         return resp.data;
       });
     };
+
     var uberPrice = function(data){
       return $http({
         method: 'POST',
@@ -283,7 +283,6 @@ angular.module('sqrtl.httpRequest', ["ngLodash"])
         return resp.data;
       });
     };
-
     var geoFindMe = function(callback){
       navigator.geolocation.getCurrentPosition(function(success){
         callback(success);
@@ -298,23 +297,58 @@ angular.module('sqrtl.httpRequest', ["ngLodash"])
       uberRide: uberRide,
       geoFindMe: geoFindMe
     };
+  })
+  .factory("LocationFactory", function($window){
+    var longitude, latitude;
+
+    var setCoordinates = function(coordinates){
+      $window.localStorage.setItem('LocationFactoryCoordinates', JSON.stringify(coordinates));
+      longitude = coordinates.longitude;
+      latitude = coordinates.latitude;
+    };
 
 
+    var findDistance = function(coordinates){
+      Number.prototype.toRad = function(){
+        return this*Math.PI/180;
+      };
+      var lat1 = latitude,
+          lon1 = longitude,
+          lat2 = coordinates.latitude,
+          lon2 = coordinates.longitude;
+      if(typeof lat1 != 'number' || typeof lat2 != 'number' ||typeof lon1 != 'number' || typeof lon2 != 'number'){
+        return undefined;
+      }    
+      var R = 6371e3,
+          phi1 = lat1.toRad(),
+          phi2 = lat2.toRad(),
+          deltaPhi = (lat1 - lat2).toRad(),
+          deltaLambda = (lon1 - lon2).toRad();
 
+      var a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2)+
+              Math.cos(phi1) * Math.cos(phi2) *
+              Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      return Math.floor(R * c)/1000;
+    };
+
+    return {
+      setCoordinates: setCoordinates,
+      findDistance: findDistance
+    };
   });
-  // .factory('UserResponses', function($http){
-  //   //tells the database if a user accepted suggestions
-  //   var initialReaction = function(userName, restauranArray){
-  //     return $http({
-  //       method: 'POST',
-  //       url: '/adventure',
-  //       data: JSON
-  //     }).then(functon(){
-  //       //should do something.
-  //     })
-  //   }
 
-  // });
+  // var getDistance = function(){
+  //   var long1 = window.localStorage.getItem('longitude'),
+  //       lat1 = window.localStorage.getItem('latitude'),
+  //       long2 = $scope.data.location.coordinate.longitude,
+  //       lat2 = $scope.data.location.coordinate.latitude;
+
+  //   var distance = Math.sqrt(Math.pow(Math.abs(long1 - long2), 2) + Math.pow(Math.abs(lat1 - lat2), 2));
+  //   console.log(long1, long2,lat1,lat2);
+  //   console.log(distance);
+  // };
 angular.module("sqrtl.uber", ['uiGmapgoogle-maps', 'ngTouch'])
   .controller("UberController", function($scope, Adventures){
 

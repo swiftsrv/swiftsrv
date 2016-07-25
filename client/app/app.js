@@ -16,7 +16,7 @@ angular.module("sqrtl", [
     //sets default state when the app is booted
     $urlRouterProvider
       .when('uber', '/uber')
-      .otherwise('/form');
+      .otherwise('/form')
       .otherwise('/');
 
     $locationProvider.html5Mode(true);
